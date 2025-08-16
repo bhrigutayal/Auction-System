@@ -8,7 +8,10 @@ WORKDIR /app/auction-client
 
 # Copy package files and install dependencies for the client
 COPY auction-client/package*.json ./
-RUN npm install
+
+# Clear npm cache and install with correct platform detection
+RUN npm cache clean --force
+RUN npm install --platform=linux --arch=x64
 
 # Copy the rest of the client application code
 COPY auction-client/ ./
@@ -31,7 +34,8 @@ ENV NODE_ENV=production
 COPY package*.json ./
 
 # Install only production dependencies for the server
-RUN npm install --production
+RUN npm cache clean --force
+RUN npm install --production --platform=linux --arch=x64
 
 # Copy the server-side code and other necessary root files
 COPY . .
@@ -40,7 +44,7 @@ COPY . .
 COPY --from=builder /app/auction-client/.next ./auction-client/.next
 COPY --from=builder /app/auction-client/public ./auction-client/public
 
-# Expose the port the server will run on (using 8080 as a common default)
+# Expose the port the server will run on
 EXPOSE 8080
 
 # The command to start the server
