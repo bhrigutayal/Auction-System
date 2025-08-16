@@ -1,88 +1,47 @@
-# Use Node.js 18 Alpine for smaller image size
-FROM node:18-alpine AS base
+# ==============================================================================
+# STAGE 1: Build the Next.js Frontend
+# ==============================================================================
+FROM node:20-alpine AS builder
 
-# Install dependencies for native modules
-RUN apk add --no-cache python3 make g++
-
-# Set working directory
-WORKDIR /app
-
-# Copy package files for both frontend and backend
-COPY ../auction-client/package*.json ./auction-client/
-COPY ../package*.json ./backend/
-
-# Install dependencies for both
-RUN cd auction-client && npm ci --only=production
-RUN cd backend && npm ci --only=production
-
-# Build the frontend
-FROM base AS frontend-builder
+# Set the working directory for the client app
 WORKDIR /app/auction-client
-COPY ../auction-client/ ./
+
+# Copy package files
+COPY auction-client/package*.json ./
+
+# Remove any existing lock files and node_modules, then install fresh
+RUN rm -rf node_modules package-lock.json
+RUN npm cache clean --force
+RUN npm install --force
+
+# Copy the rest of the client application code
+COPY auction-client/ ./
+
+# Build the Next.js application for production
 RUN npm run build
 
-# Final production image
-FROM node:18-alpine AS production
+# ==============================================================================
+# STAGE 2: Prepare the Production Server
+# ==============================================================================
+FROM node:20-alpine AS runner
 
-# Install dependencies for native modules
-RUN apk add --no-cache python3 make g++
-
-# Create app directory
 WORKDIR /app
-
-# Copy backend dependencies and source
-COPY --from=base /app/backend/node_modules ./node_modules
-COPY --from=base /app/backend/package*.json ./
-COPY ../src ./src
-COPY ../server.js ./
-
-# Copy built frontend
-COPY --from=frontend-builder /app/auction-client/.next ./auction-client/.next
-COPY --from=frontend-builder /app/auction-client/public ./auction-client/public
-COPY --from=base /app/auction-client/node_modules ./auction-client/node_modules
-COPY --from=base /app/auction-client/package*.json ./auction-client/
-
-# Copy frontend source for server-side rendering
-COPY ../auction-client/src ./auction-client/src
-COPY ../auction-client/next.config.js ./auction-client/
-COPY ../auction-client/tailwind.config.js ./auction-client/
-COPY ../auction-client/postcss.config.js ./auction-client/
-
-# Create a combined package.json for the production environment
-RUN echo '{ \
-  "name": "auction-system", \
-  "version": "1.0.0", \
-  "main": "server.js", \
-  "scripts": { \
-    "start": "node server.js", \
-    "dev": "node server.js" \
-  }, \
-  "dependencies": { \
-    "@supabase/supabase-js": "^2.55.0", \
-    "cors": "^2.8.5", \
-    "dotenv": "^17.2.1", \
-    "express": "^5.1.0", \
-    "jsonwebtoken": "^9.0.2", \
-    "nodemailer": "^6.10.1", \
-    "pdfkit": "^0.14.0", \
-    "redis": "^5.8.1", \
-    "socket.io": "^4.8.1" \
-  } \
-}' > package.json
-
-# Install production dependencies
-RUN npm ci --only=production
-
-# Expose port
-EXPOSE 3001
-
-# Set environment variables
 ENV NODE_ENV=production
-ENV PORT=3001
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3001/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
+# Copy the server's package files
+COPY package*.json ./
 
-# Start the application
-CMD ["npm", "start"]
+# Clean install for server
+RUN rm -rf node_modules package-lock.json
+RUN npm cache clean --force
+RUN npm install --production --force
+
+# Copy the server-side code and other necessary root files
+COPY . .
+
+# Copy the built Next.js application from the 'builder' stage
+COPY --from=builder /app/auction-client/.next ./auction-client/.next
+COPY --from=builder /app/auction-client/public ./auction-client/public
+
+EXPOSE 8080
+CMD ["node", "server.js"]
