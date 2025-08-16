@@ -1,0 +1,26 @@
+{
+  "name": "AuctionHub - Real-Time Online Auctions",
+  "short_name": "AuctionHub",
+  "description": "Experience the thrill of real-time online auctions with live bidding, instant updates, and secure transactions.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#3B82F6",
+  "theme_color": "#8B5CF6",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "32x32",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["business", "finance", "shopping"],
+  "lang": "en-US",
+  "dir": "ltr"
+}
