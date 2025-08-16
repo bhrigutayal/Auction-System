@@ -7,13 +7,12 @@ FROM node:20-alpine AS builder
 # Set the working directory for the client app build
 WORKDIR /app/auction-client
 
-# Copy package.json and package-lock.json first.
-# This leverages Docker's layer caching. The next step will only run
-# if these files have changed.
-COPY auction-client/package.json auction-client/package-lock.json* ./
+# Copy package.json ONLY. By ignoring the local package-lock.json,
+# we ensure npm resolves dependencies for the correct (Linux) platform.
+COPY auction-client/package.json ./
 
-# Install all dependencies. By running this inside the Linux container,
-# npm will fetch the correct versions of packages (like lightningcss) for Linux,
+# Install all dependencies. This will generate a new, temporary
+# package-lock.json inside the container that is correct for Linux,
 # avoiding the platform error.
 RUN npm install
 
@@ -21,8 +20,7 @@ RUN npm install
 COPY auction-client/ ./
 
 # Run the build command.
-# Your postcss.config.js and jsconfig.json should be part of your source code,
-# not generated here.
+# Your postcss.config.js and jsconfig.json should be part of your source code.
 RUN npm run build
 
 # ==============================================================================
