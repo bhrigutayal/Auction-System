@@ -39,6 +39,16 @@ RUN npm run build
 # ==============================================================================
 FROM node:20-alpine AS runner
 
+# --- Runtime Environment Variables ---
+# We must also make the environment variables available to the final running application.
+# We repeat the same pattern here for the runner stage.
+ARG NEXT_PUBLIC_SUPABASE_URL
+ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
+# --- End of Environment Variables ---
+
 WORKDIR /app
 ENV NODE_ENV=production
 

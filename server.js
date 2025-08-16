@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const PDFDocument = require('pdfkit');
 require('dotenv').config();
-const path = require('path'); // Added for serving static files
+const path = require('path'); 
 
 const app = express();
 app.use(cors());
@@ -41,7 +41,7 @@ redisClient.on('reconnecting', () => console.log('Redis Client Reconnecting'));
 
 // Initialize Supabase Client with service role for admin access
 const supabase = createSupabaseClient(
-  process.env.SUPABASE_URL, 
+  process.env.NEXT_PUBLIC_SUPABASE_URL, 
   process.env.SUPABASE_SERVICE_ROLE_KEY )
 
 // Initialize Email Transporter with proper Gmail configuration
