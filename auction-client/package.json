@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
+    "@supabase/supabase-js": "^2.55.0",
     "agent-base": "^7.1.4",
     "bin-links": "^5.0.0",
     "caniuse-lite": "^1.0.30001735",
