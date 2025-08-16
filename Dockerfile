@@ -5,13 +5,29 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app/auction-client
 
-# Copy all files (including config files)
-COPY auction-client/ ./
+# Copy only package.json (avoid copying package-lock.json initially)
+COPY auction-client/package.json ./
 
-# Clean and install
-RUN rm -rf node_modules package-lock.json
+# Completely clean environment
+RUN rm -rf node_modules package-lock.json ~/.npm
 RUN npm cache clean --force
-RUN npm install
+
+# Install with platform override and without optional dependencies
+RUN npm install --platform=linux --arch=x64 --no-optional --force
+
+# Now copy the source code
+COPY auction-client/src ./src
+COPY auction-client/public ./public
+COPY auction-client/next.config.js ./next.config.js 2>/dev/null || true
+COPY auction-client/jsconfig.json ./jsconfig.json 2>/dev/null || true
+COPY auction-client/tsconfig.json ./tsconfig.json 2>/dev/null || true
+COPY auction-client/tailwind.config.js ./tailwind.config.js 2>/dev/null || true
+COPY auction-client/postcss.config.js ./postcss.config.js 2>/dev/null || true
+
+# Create jsconfig.json if it doesn't exist
+RUN if [ ! -f jsconfig.json ] && [ ! -f tsconfig.json ]; then \
+    echo '{"compilerOptions":{"baseUrl":".","paths":{"@/*":["./src/*"]}},"include":["src/**/*"],"exclude":["node_modules"]}' > jsconfig.json; \
+    fi
 
 # Build
 RUN npm run build
