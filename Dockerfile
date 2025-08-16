@@ -5,26 +5,26 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app/auction-client
 
-# Copy ONLY package.json first (avoid copying package-lock.json)
+# Copy ONLY package.json first
 COPY auction-client/package.json ./
 
-# Install dependencies fresh for Linux platform
-# This creates a new package-lock.json specific to Linux
+# Install dependencies fresh for Linux
 RUN npm install
 
-# Now copy the rest of the source code
-COPY auction-client/src ./src
-COPY auction-client/public ./public
-COPY auction-client/next.config.* ./
-COPY auction-client/tailwind.config.* ./
-COPY auction-client/postcss.config.* ./
-COPY auction-client/jsconfig.json ./jsconfig.json 2>/dev/null || echo '{"compilerOptions":{"baseUrl":".","paths":{"@/*":["./src/*"]}}}' > jsconfig.json
+# Copy all source files
+COPY auction-client/ ./
 
-# Build the application
+# Create jsconfig.json for path aliases
+RUN echo '{"compilerOptions":{"baseUrl":".","paths":{"@/*":["./src/*"]}}}' > jsconfig.json
+
+# Ensure proper postcss config
+RUN echo 'module.exports = { plugins: { tailwindcss: {}, autoprefixer: {} } }' > postcss.config.js
+
+# Build
 RUN npm run build
 
 # ==============================================================================
-# STAGE 2: Prepare the Production Server
+# STAGE 2: Production Server
 # ==============================================================================
 FROM node:20-alpine AS runner
 
@@ -37,9 +37,8 @@ RUN npm install --production
 
 # Copy server files
 COPY server.js ./
-COPY . .
 
-# Copy built Next.js app from builder stage
+# Copy built frontend
 COPY --from=builder /app/auction-client/.next ./auction-client/.next
 COPY --from=builder /app/auction-client/public ./auction-client/public
 
