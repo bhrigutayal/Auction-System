@@ -1,36 +1,52 @@
+# ==============================================================================
+# STAGE 1: Build the Next.js Frontend
+# ==============================================================================
+# Using a specific version is better for reproducible builds
 FROM node:20-alpine AS builder
 
-# Install build dependencies for native modules
-RUN apk add --no-cache python3 make g++ libc6-compat
-
+# Set the working directory for the client app build
 WORKDIR /app/auction-client
 
-# Copy package.json first
+# Copy package.json ONLY. By ignoring the local package-lock.json,
+# we ensure npm resolves dependencies for the correct (Linux) platform.
 COPY auction-client/package.json ./
 
-# Install dependencies with platform override
-RUN npm install --platform=linux --arch=x64 --force
+# Install all dependencies. This will generate a new, temporary
+# package-lock.json inside the container that is correct for Linux,
+# avoiding the platform error.
+RUN npm install
 
-# Copy source code
+# The build process requires this specific PostCSS plugin for Tailwind CSS v4.
+# We install it separately to ensure it's available.
+RUN npm install @tailwindcss/postcss
+
+# Now, copy all the source files for the client application
 COPY auction-client/ ./
 
-# Remove any Windows lock file that was copied
-RUN rm -f package-lock.json
-
-# Create jsconfig for path aliases
-RUN echo '{"compilerOptions":{"baseUrl":".","paths":{"@/*":["./src/*"]}}}' > jsconfig.json
-
-# Build with verbose output to see any issues
+# Run the build command.
+# Your postcss.config.js and jsconfig.json should be part of your source code.
 RUN npm run build
 
+# ==============================================================================
+# STAGE 2: Prepare the Production Server
+# ==============================================================================
 FROM node:20-alpine AS runner
+
 WORKDIR /app
 ENV NODE_ENV=production
 
+# This assumes your server.js has its own package.json at the root of your project.
+# Copy its package files.
 COPY package*.json ./
+
+# Install ONLY the production dependencies needed to run the server.
 RUN npm install --production
 
+# Copy the server file and any other necessary files from your project root.
 COPY server.js ./
+
+# Copy the built Next.js app and public assets from the 'builder' stage.
+# The destination paths match your original file structure.
 COPY --from=builder /app/auction-client/.next ./auction-client/.next
 COPY --from=builder /app/auction-client/public ./auction-client/public
 
