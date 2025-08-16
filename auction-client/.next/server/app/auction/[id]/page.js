@@ -333,17 +333,17 @@ module.exports = require("next/dist/server/app-render/work-unit-async-storage.ex
 
 /***/ }),
 
-/***/ "?32c4":
-/*!****************************!*\
-  !*** bufferutil (ignored) ***!
-  \****************************/
+/***/ "?3dc1":
+/*!********************************!*\
+  !*** supports-color (ignored) ***!
+  \********************************/
 /***/ (() => {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ "?66e9":
+/***/ "?abbf":
 /*!********************************!*\
   !*** utf-8-validate (ignored) ***!
   \********************************/
@@ -353,10 +353,30 @@ module.exports = require("next/dist/server/app-render/work-unit-async-storage.ex
 
 /***/ }),
 
-/***/ "?d272":
+/***/ "?bf50":
 /*!********************************!*\
   !*** supports-color (ignored) ***!
   \********************************/
+/***/ (() => {
+
+/* (ignored) */
+
+/***/ }),
+
+/***/ "?d04b":
+/*!********************************!*\
+  !*** supports-color (ignored) ***!
+  \********************************/
+/***/ (() => {
+
+/* (ignored) */
+
+/***/ }),
+
+/***/ "?ed2e":
+/*!****************************!*\
+  !*** bufferutil (ignored) ***!
+  \****************************/
 /***/ (() => {
 
 /* (ignored) */
@@ -601,7 +621,7 @@ module.exports = require("zlib");
 var __webpack_require__ = require("../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, ["vendor-chunks/next","vendor-chunks/@swc","vendor-chunks/@supabase","vendor-chunks/tr46","vendor-chunks/whatwg-url","vendor-chunks/react-hot-toast","vendor-chunks/webidl-conversions","vendor-chunks/goober","vendor-chunks/engine.io-client","vendor-chunks/ws","vendor-chunks/socket.io-client","vendor-chunks/engine.io-parser","vendor-chunks/debug","vendor-chunks/socket.io-parser","vendor-chunks/@socket.io","vendor-chunks/xmlhttprequest-ssl","vendor-chunks/ms"], () => (__webpack_exec__("(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader/index.js?name=app%2Fauction%2F%5Bid%5D%2Fpage&page=%2Fauction%2F%5Bid%5D%2Fpage&appPaths=%2Fauction%2F%5Bid%5D%2Fpage&pagePath=private-next-app-dir%2Fauction%2F%5Bid%5D%2Fpage.tsx&appDir=D%3A%5CAuction-System%5Cauction-client%5Csrc%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=D%3A%5CAuction-System%5Cauction-client&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=!")));
+var __webpack_exports__ = __webpack_require__.X(0, ["vendor-chunks/next","vendor-chunks/@supabase","vendor-chunks/tr46","vendor-chunks/whatwg-url","vendor-chunks/react-hot-toast","vendor-chunks/webidl-conversions","vendor-chunks/@swc","vendor-chunks/goober","vendor-chunks/engine.io-client","vendor-chunks/socket.io-client","vendor-chunks/socket.io-parser","vendor-chunks/engine.io-parser","vendor-chunks/@socket.io","vendor-chunks/xmlhttprequest-ssl","vendor-chunks/ms"], () => (__webpack_exec__("(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader/index.js?name=app%2Fauction%2F%5Bid%5D%2Fpage&page=%2Fauction%2F%5Bid%5D%2Fpage&appPaths=%2Fauction%2F%5Bid%5D%2Fpage&pagePath=private-next-app-dir%2Fauction%2F%5Bid%5D%2Fpage.tsx&appDir=D%3A%5CAuction-System%5Cauction-client%5Csrc%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=D%3A%5CAuction-System%5Cauction-client&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=!")));
 module.exports = __webpack_exports__;
 
 })();
