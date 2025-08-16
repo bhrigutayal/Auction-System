@@ -4,15 +4,22 @@
 # Using a specific version is better for reproducible builds
 FROM node:20-alpine AS builder
 
-# On Render, environment variables are automatically available to the build process.
-# We don't need to declare ARG or ENV for them here. The 'npm run build'
-# command below will inherit them from the build environment.
+# --- Build-time Environment Variables ---
+# We MUST declare ARGs for the environment variables that are needed during the build.
+# Render will automatically pass environment variables with matching names to these ARGs.
+ARG NEXT_PUBLIC_SUPABASE_URL
+ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+# Set these arguments as environment variables within the build container
+# so the 'npm run build' command can access them.
+ENV NEXT_PUBLIC_SUPABASE_URL=$SUPABASE_URL
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY
+# --- End of Environment Variables ---
 
 # Set the working directory for the client app build
 WORKDIR /app/auction-client
 
-# Copy package.json ONLY. By ignoring the local package-lock.json,
-# we ensure npm resolves dependencies for the correct (Linux) platform.
+# Copy package.json ONLY.
 COPY auction-client/package.json ./
 
 # Install all dependencies.
@@ -24,8 +31,7 @@ RUN npm install @tailwindcss/postcss
 # Now, copy all the source files for the client application
 COPY auction-client/ ./
 
-# Run the build command. The build process will now have access to the Supabase
-# environment variables set in your Render dashboard.
+# Run the build command. This will now succeed because the ENV variables are set.
 RUN npm run build
 
 # ==============================================================================
@@ -37,7 +43,6 @@ WORKDIR /app
 ENV NODE_ENV=production
 
 # This assumes your server.js has its own package.json at the root of your project.
-# Copy its package files.
 COPY package*.json ./
 
 # Install ONLY the production dependencies needed to run the server.
@@ -47,7 +52,6 @@ RUN npm install --production
 COPY server.js ./
 
 # Copy the built Next.js app and public assets from the 'builder' stage.
-# The destination paths match your original file structure.
 COPY --from=builder /app/auction-client/.next ./auction-client/.next
 COPY --from=builder /app/auction-client/public ./auction-client/public
 
