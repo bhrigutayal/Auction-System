@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import AuctionCard from '@/app/components/AuctionCard';
-import { supabase } from '@/lib/supabaseClient';
+import AuctionCard from '../app/components/AuctionCard';
+import { supabase } from '../lib/supabaseClient';
 
 // This function now fetches data from Supabase
 const getAuctions = async () => {

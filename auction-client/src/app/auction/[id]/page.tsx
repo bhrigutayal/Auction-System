@@ -2,10 +2,10 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import io, { Socket } from 'socket.io-client';
-import { supabase } from '@/lib/supabaseClient';
-import CountdownTimer from '@/app/components/CountdownTimer';
+import { supabase } from '../../../lib/supabaseClient';
+import CountdownTimer from '../../components/CountdownTimer';
 import { toast } from 'react-hot-toast';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '../../../contexts/AuthContext';
 import Link from 'next/link';
 
 // Update the socket URL for production

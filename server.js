@@ -42,7 +42,7 @@ redisClient.on('reconnecting', () => console.log('Redis Client Reconnecting'));
 // Initialize Supabase Client with service role for admin access
 const supabase = createSupabaseClient(
   process.env.SUPABASE_URL, 
-  process.env.SUPABASE_SERVICE_ROLE_KEY 
+  process.env.SUPABASE_SERVICE_ROLE_KEY )
 
 // Initialize Email Transporter with proper Gmail configuration
 const transporter = nodemailer.createTransport({
@@ -713,25 +713,5 @@ const createPostBidActionIfNeeded = async (auctionId, sellerId, bidderId) => {
   } catch (error) {
     console.error('Error in createPostBidActionIfNeeded:', error);
     return null;
-  }
-};
-
-// Add this function to handle auction creation with email storage
-const createAuctionWithEmail = async (auctionData, sellerEmail) => {
-  try {
-    const { data, error } = await supabase
-      .from('auctions')
-      .insert({
-        ...auctionData,
-        seller_email: sellerEmail // Add this field to store seller email
-      })
-      .select()
-      .single();
-
-    if (error) throw error;
-    return data;
-  } catch (error) {
-    console.error('Error creating auction:', error);
-    throw error;
   }
 };
