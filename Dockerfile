@@ -9,11 +9,13 @@ FROM node:20-alpine AS builder
 # Render will automatically pass environment variables with matching names to these ARGs.
 ARG NEXT_PUBLIC_SUPABASE_URL
 ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+ARG REDIS_URL
 
 # Set these arguments as environment variables within the build container
 # so the 'npm run build' command can access them.
 ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
 ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
+ENV REDIS_URL=$REDIS_URL
 # --- End of Environment Variables ---
 
 # Set the working directory for the client app build
@@ -44,9 +46,11 @@ FROM node:20-alpine AS runner
 # We repeat the same pattern here for the runner stage.
 ARG NEXT_PUBLIC_SUPABASE_URL
 ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+ARG REDIS_URL
 
 ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
 ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
+ENV REDIS_URL=$REDIS_URL
 # --- End of Environment Variables ---
 
 WORKDIR /app
