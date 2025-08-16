@@ -12,7 +12,7 @@ COPY ../auction-client/package*.json ./auction-client/
 COPY ../package*.json ./backend/
 
 # Install dependencies for both
-RUN cd auction-client && npm ci --only=production
+RUN cd auction-client && npm install --only=production
 RUN cd backend && npm ci --only=production
 
 # Build the frontend
