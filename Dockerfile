@@ -12,8 +12,8 @@ ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 # Set these arguments as environment variables within the build container
 # so the 'npm run build' command can access them.
-ENV NEXT_PUBLIC_SUPABASE_URL=$SUPABASE_URL
-ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY
+ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
 # --- End of Environment Variables ---
 
 # Set the working directory for the client app build
