@@ -4,6 +4,10 @@
 # Using a specific version is better for reproducible builds
 FROM node:20-alpine AS builder
 
+# On Render, environment variables are automatically available to the build process.
+# We don't need to declare ARG or ENV for them here. The 'npm run build'
+# command below will inherit them from the build environment.
+
 # Set the working directory for the client app build
 WORKDIR /app/auction-client
 
@@ -11,20 +15,17 @@ WORKDIR /app/auction-client
 # we ensure npm resolves dependencies for the correct (Linux) platform.
 COPY auction-client/package.json ./
 
-# Install all dependencies. This will generate a new, temporary
-# package-lock.json inside the container that is correct for Linux,
-# avoiding the platform error.
+# Install all dependencies.
 RUN npm install
 
 # The build process requires this specific PostCSS plugin for Tailwind CSS v4.
-# We install it separately to ensure it's available.
 RUN npm install @tailwindcss/postcss
 
 # Now, copy all the source files for the client application
 COPY auction-client/ ./
 
-# Run the build command.
-# Your postcss.config.js and jsconfig.json should be part of your source code.
+# Run the build command. The build process will now have access to the Supabase
+# environment variables set in your Render dashboard.
 RUN npm run build
 
 # ==============================================================================
