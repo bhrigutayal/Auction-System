@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import Link from 'next/link';
 import AuctionCard from '../app/components/AuctionCard';
 import { supabase } from '../lib/supabaseClient';
