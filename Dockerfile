@@ -8,16 +8,25 @@ WORKDIR /app/auction-client
 # Copy package.json only first
 COPY auction-client/package.json ./
 
-# Clean and install dependencies for Linux
+# Remove lightningcss from package.json if it exists and install
+RUN npm pkg delete dependencies.lightningcss || true
+RUN npm pkg delete devDependencies.lightningcss || true
+RUN npm pkg delete dependencies."@tailwindcss/postcss" || true
+RUN npm pkg delete devDependencies."@tailwindcss/postcss" || true
+
+# Clean and install dependencies
 RUN rm -rf node_modules package-lock.json
 RUN npm cache clean --force
-RUN npm install --no-optional
+RUN npm install
 
 # Copy all source files
 COPY auction-client/ ./
 
-# Remove any package-lock.json that was copied (might contain Windows binaries)
+# Remove any package-lock.json that was copied
 RUN rm -f package-lock.json
+
+# Create proper PostCSS config without lightningcss
+RUN echo 'module.exports = { plugins: { tailwindcss: {}, autoprefixer: {} } }' > postcss.config.js
 
 # Ensure we have path configuration
 RUN echo '{"compilerOptions":{"baseUrl":".","paths":{"@/*":["./src/*"]}},"include":["src/**/*"],"exclude":["node_modules"]}' > jsconfig.json
